@@ -104,18 +104,110 @@ The project uses the **Model Context Protocol (MCP)** to connect AI agents with 
 Current MCP architecture:
 
 ```text
-                         AI QA Agent
-                              │
-             ┌────────────────┼────────────────┐
-             │                │                │
-             ↓                ↓                ↓
-        QA RAG MCP      Playwright MCP    GitHub MCP
-             │                │
-             ↓                ↓
-      QA Knowledge     Browser Interaction
-                              │
-                              ↓
-                    Playwright Test MCP
+                         ┌─────────────────────────────┐
+                         │        USER / QA ENGINEER   │
+                         │   User Story / QA Request   │
+                         └──────────────┬──────────────┘
+                                        │
+                                        ▼
+                    ┌────────────────────────────────────┐
+                    │       AI E2E QA AGENT               │
+                    │   Complete QA Workflow Orchestrator │
+                    └────────────────┬───────────────────┘
+                                     │
+                 ┌───────────────────┼───────────────────┐
+                 │                   │                   │
+                 ▼                   ▼                   ▼
+        ┌────────────────┐  ┌─────────────────┐  ┌─────────────────┐
+        │    QA RAG MCP  │  │ TEST PLANNER    │  │   GITHUB MCP    │
+        │   qa-rag       │  │     AGENT       │  │                 │
+        └───────┬────────┘  └────────┬────────┘  └─────────────────┘
+                │                    │
+                ▼                    │
+        ┌────────────────┐           │
+        │ RAG MCP Server │           │
+        │ mcp_server.py  │           │
+        └───────┬────────┘           │
+                ▼                    ▼
+        ┌────────────────┐   ┌──────────────────────┐
+        │ retrieve.py    │   │ PLAYWRIGHT TEST MCP  │
+        └───────┬────────┘   └──────────┬───────────┘
+                ▼                       │
+        ┌────────────────┐              │
+        │    ChromaDB    │              │
+        └───────┬────────┘              │
+                ▼                       ▼
+        ┌────────────────┐       ┌───────────────┐
+        │ QA KNOWLEDGE   │       │   BROWSER     │
+        │                │       │  EXPLORATION  │
+        │ Requirements   │       └───────┬───────┘
+        │ Test Cases     │               │
+        │ QA Guidelines  │               ▼
+        │ Known Bugs     │       ┌───────────────┐
+        └────────────────┘       │ TEST PLAN     │
+                                 └───────┬───────┘
+                                         │
+                                         ▼
+                            ┌────────────────────────┐
+                            │ TEST GENERATOR AGENT    │
+                            │                         │
+                            │ Playwright Test MCP     │
+                            └───────────┬────────────┘
+                                        │
+                                        ▼
+                            ┌────────────────────────┐
+                            │ PLAYWRIGHT E2E TESTS    │
+                            │ tests/saucedemo-        │
+                            │ checkout/               │
+                            └───────────┬────────────┘
+                                        │
+                                        ▼
+                            ┌────────────────────────┐
+                            │    TEST EXECUTION       │
+                            │   Chromium / Playwright │
+                            └───────────┬────────────┘
+                                        │
+                                  ┌─────┴─────┐
+                                  │           │
+                                  ▼           ▼
+                              PASS        FAILURE
+                                  │           │
+                                  │           ▼
+                                  │  ┌────────────────────┐
+                                  │  │ TEST HEALER AGENT  │
+                                  │  │                    │
+                                  │  │ Playwright Test MCP│
+                                  │  └─────────┬──────────┘
+                                  │            │
+                                  │            ▼
+                                  │      Debug / Diagnose
+                                  │            │
+                                  │       ┌────┴────┐
+                                  │       ▼         ▼
+                                  │   Fix Test   App Defect
+                                  │       │         │
+                                  │       └────┬────┘
+                                  │            ▼
+                                  │         Re-run
+                                  │            │
+                                  └────────────┤
+                                               ▼
+                                  ┌────────────────────────┐
+                                  │     QA REPORTING       │
+                                  │                        │
+                                  │ Test Results           │
+                                  │ Defects                │
+                                  │ Evidence               │
+                                  │ Healing Results        │
+                                  └───────────┬────────────┘
+                                              │
+                                              ▼
+                                  ┌────────────────────────┐
+                                  │ test-evidence/         │
+                                  │ reports/               │
+                                  │ screenshots/           │
+                                  └────────────────────────┘
+
 ```
 
 ### QA RAG MCP
