@@ -1,6 +1,6 @@
 # AI-Powered E2E QA Automation Agent
 
-An AI-driven QA automation workflow that combines **Playwright, MCP, RAG, AI agents, failure analysis, LLM evaluation, and CI/CD quality gates** to support the E2E testing lifecycle — from requirements analysis and test planning to exploratory testing, test generation, execution, failure analysis, healing, evaluation, and reporting.
+An AI-driven QA automation workflow that combines **Playwright, MCP, RAG, AI agents, failure analysis** to support the E2E testing lifecycle — from requirements analysis and test planning to exploratory testing, test generation, execution, failure analysis, healing, and reporting.
 
 The project uses **SauceDemo** as the application under test.
 
@@ -38,10 +38,6 @@ Test Execution
 Failure Analysis
     ↓
 Automation Healing
-    ↓
-AI / LLM Evaluation
-    ↓
-CI/CD Quality Gate
     ↓
 QA Reporting
 ```
@@ -277,15 +273,6 @@ MCP configuration is maintained in:
                          └──────────┬───────────┘
                                     ↓
                          ┌──────────────────────┐
-                         │   AI / LLM Evaluation│
-                         └──────────┬───────────┘
-                                    ↓
-                         ┌──────────────────────┐
-                         │    CI/CD Quality     │
-                         │        Gate          │
-                         └──────────┬───────────┘
-                                    ↓
-                         ┌──────────────────────┐
                          │      QA Reports      │
                          └──────────────────────┘
 ```
@@ -297,29 +284,33 @@ MCP configuration is maintained in:
 The RAG component converts the project's QA knowledge into searchable embeddings.
 
 ```text
-                 QA Knowledge
-                      │
-          ┌───────────┼───────────┐
-          ↓           ↓           ↓
-    Requirements   Test Cases   Known Bugs
-          │           │           │
-          └───────────┼───────────┘
-                      ↓
-                QA Guidelines
-                      ↓
-                Text Ingestion
-                      ↓
-            Sentence Transformers
-                      ↓
-                  Embeddings
-                      ↓
-                  ChromaDB
-                      ↓
-             Similarity Search
-                      ↓
-             Relevant QA Context
-                      ↓
-                  AI Agent
+                    QA Knowledge
+                         │
+             ┌───────────┼───────────┐
+             ↓           ↓           ↓
+       Requirements   Test Cases   Known Bugs
+             │           │           │
+             └───────────┼───────────┘
+                         ↓
+                   QA Guidelines
+                         ↓
+                   Text Ingestion
+                         ↓
+              Sentence Transformers
+                         ↓
+                     Embeddings
+                         ↓
+                    ChromaDB
+                         ↓
+                  Similarity Search
+                         ↓
+                Relevant QA Context
+                         ↓
+                    FastAPI API
+                         ↓
+                     QA RAG MCP
+                         ↓
+                      AI Agent
 ```
 
 ### Example
@@ -599,86 +590,6 @@ Current screenshot evidence includes scenarios such as:
 
 ---
 
-# 🧠 AI / LLM Evaluation
-
-The project also includes an AI evaluation stage for evaluating AI-generated QA outputs.
-
-The evaluation architecture is:
-
-```text
-Golden Test Cases
-       ↓
-AI Generated Output
-       ↓
-┌─────────────────────┐
-│ Heuristic Evaluation│
-└──────────┬──────────┘
-           │
-           +
-           │
-┌──────────▼──────────┐
-│   LLM-as-a-Judge    │
-└──────────┬──────────┘
-           ↓
-      Hybrid Score
-           ↓
-      Quality Gate
-```
-
-### Evaluation dimensions
-
-The evaluation considers:
-
-* Correctness
-* Completeness
-* Clarity
-* Actionability
-* Overall quality
-
-### Evaluation weighting
-
-```text
-Heuristic evaluation      40%
-LLM-as-a-Judge             60%
-```
-
-The project uses a local Ollama model for the LLM evaluation workflow:
-
-```text
-Ollama
-└── llama3.2:3b
-```
-
-These evaluation weights and thresholds are **project-defined rules** for this portfolio project.
-
----
-
-# 🚦 CI/CD Quality Gate
-
-GitHub Actions is used to automate project workflows.
-
-Workflow files:
-
-```text
-.github/workflows/
-├── copilot-setup-steps.yml
-└── playwright.yml
-```
-
-The AI evaluation quality gate is defined as:
-
-```text
-Average final score >= 95%
-AND
-Failed evaluations = 0
-```
-
-If the project-defined quality criteria are not met, the evaluation workflow can fail the quality gate.
-
-> The 95% threshold is a project-specific quality gate and is not presented as an industry-wide standard.
-
----
-
 # 🛠️ Tech Stack
 
 | Technology              | Purpose                |
@@ -689,8 +600,7 @@ If the project-defined quality criteria are not met, the evaluation workflow can
 | MCP                     | AI-to-tool integration |
 | ChromaDB                | Vector database        |
 | Sentence Transformers   | Text embeddings        |
-| Ollama                  | Local LLM evaluation   |
-| Llama 3.2 3B            | LLM-as-a-Judge         |
+| API                     | FastAPI                |
 | GitHub Copilot          | AI-assisted workflow   |
 | GitHub Actions          | CI/CD automation       |
 | Git                     | Version control        |
@@ -700,7 +610,7 @@ If the project-defined quality criteria are not met, the evaluation workflow can
 # 📁 Complete Project Structure
 
 ```text
-AI-Powered-E2E-QA-Automation-Agent/
+AI-Powered-E2E-QA-MCP-RAG-Agent/
 │
 ├── .github/
 │   ├── agents/
@@ -789,7 +699,7 @@ These are not part of the core source architecture and should not be presented a
 
 ```bash
 git clone <your-repository-url>
-cd AI-Powered-E2E-QA-Automation-Agent
+cd AI-Powered-E2E-QA-MCP-RAG-Agent
 ```
 
 ## 2. Install Node dependencies
@@ -922,10 +832,6 @@ E2E Automation
 Failure Analysis
  +
 Automation Healing
- +
-LLM Evaluation
- +
-CI/CD
 ```
 
 The project explores how AI agents can assist QA engineers with:
@@ -939,8 +845,6 @@ The project explores how AI agents can assist QA engineers with:
 * Failure analysis
 * Automation healing
 * Known-defect tracking
-* AI output evaluation
-* Quality gates
 * QA reporting
 
 The goal is not to replace QA engineering. The goal is to demonstrate how **AI and automation can be integrated into a structured, practical E2E QA engineering workflow.**
