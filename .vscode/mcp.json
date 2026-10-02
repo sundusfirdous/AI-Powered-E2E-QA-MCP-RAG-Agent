@@ -1,0 +1,41 @@
+{
+  "servers": {
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest"
+      ],
+      "type": "stdio"
+    },
+    "playwright-test": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "playwright",
+        "run-test-mcp-server"
+      ]
+    },
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${input:github_mcp_pat}"
+      }
+    },
+    "qa-rag": {
+      "type": "stdio",
+      "command": "C:\\E2E-MCP-Project\\AI-Powered-E2E-QA-Automation-Agent\\rag\\venv\\Scripts\\python.exe",
+      "args": [
+        "C:\\E2E-MCP-Project\\AI-Powered-E2E-QA-Automation-Agent\\rag\\mcp_server.py"
+      ]
+    }
+  },
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "github_mcp_pat",
+      "description": "GitHub Personal Access Token",
+      "password": true
+    }
+  ]
+}

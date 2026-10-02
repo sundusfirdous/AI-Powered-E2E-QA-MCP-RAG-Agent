@@ -1,0 +1,29 @@
+{
+  "name": "ai-e2e-mcp-rag-agent",
+  "version": "1.0.0",
+  "description": "AI-Powered E2E QA Automation Agent using Playwright, MCP, RAG and LLMs",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:report": "playwright show-report"
+  },
+  "keywords": [
+    "playwright",
+    "mcp",
+    "rag",
+    "ai",
+    "qa",
+    "test-automation",
+    "llm",
+    "e2e-testing",
+    "agentic-ai"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.6.2"
+  }
+}
