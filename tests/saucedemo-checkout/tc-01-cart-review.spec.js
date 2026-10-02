@@ -1,41 +1,43 @@
-const { test, expect } = require('@playwright/test');
+const { test, expect, PRODUCTS, byTest, addToCart, openCart, startCheckout, knownBug } = require('../support/saucedemo');
 
 test.describe('SauceDemo checkout workflow', () => {
-  test('TC-01 Cart review shows item details, total, and navigation controls', async ({ page }) => {
-    test.fail();
-    test.info().annotations.push({ type: 'bug', description: 'BUG-01: Cart total missing (AC1)' });
-
-    // 1. Log in, add Sauce Labs Backpack, and verify the selected item is in the cart.
-    await page.goto('https://www.saucedemo.com/');
-    await page.locator('[data-test="username"]').fill('standard_user');
-    await page.locator('[data-test="password"]').fill('secret_sauce');
-    await page.locator('[data-test="login-button"]').click();
-    await expect(page).toHaveURL(/inventory\.html/);
-    await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
-    await expect(page.locator('[data-test="remove-sauce-labs-backpack"]')).toBeVisible();
-    await expect(page.locator('.shopping_cart_badge')).toHaveText('1');
-
-    // 2. Review the cart contents, price, total, and navigation controls.
-    await page.locator('[data-test="shopping-cart-link"]').click();
-    await expect(page).toHaveURL(/cart\.html/);
-    await expect(page.locator('[data-test="title"]')).toHaveText('Your Cart');
+  test('TC-01a Cart review shows item details and navigation controls', async ({ signedInPage: page }) => {
+    await addToCart(page, PRODUCTS.backpack);
+    await openCart(page);
+    await expect(byTest(page, 'title')).toHaveText('Your Cart');
     const cartItem = page.locator('.cart_item');
     await expect(cartItem).toContainText('Sauce Labs Backpack');
     await expect(cartItem).toContainText('$29.99');
     await expect(cartItem.locator('.cart_quantity')).toHaveText('1');
-    await expect(page.locator('[data-test="total-label"]')).toBeVisible();
-    await expect(page.locator('[data-test="continue-shopping"]')).toBeEnabled();
-    await expect(page.locator('[data-test="checkout"]')).toBeEnabled();
+    await expect(byTest(page, 'continue-shopping')).toBeEnabled();
+    await expect(byTest(page, 'checkout')).toBeEnabled();
+  });
 
-    // 3. Continue shopping and verify the cart item is preserved.
-    await page.locator('[data-test="continue-shopping"]').click();
+  test('TC-01b Continue shopping preserves the cart item', async ({ signedInPage: page }) => {
+    await addToCart(page, PRODUCTS.backpack);
+    await openCart(page);
+    await byTest(page, 'continue-shopping').click();
     await expect(page).toHaveURL(/inventory\.html/);
     await expect(page.locator('.shopping_cart_badge')).toHaveText('1');
-
-    // 4. Reopen the cart and proceed to checkout information.
-    await page.locator('[data-test="shopping-cart-link"]').click();
-    await page.locator('[data-test="checkout"]').click();
-    await expect(page).toHaveURL(/checkout-step-one\.html/);
-    await expect(page.locator('[data-test="title"]')).toHaveText('Checkout: Your Information');
+    await openCart(page);
+    await expect(page.locator('.cart_item')).toContainText('Sauce Labs Backpack');
   });
+
+  test('TC-01c Checkout from the cart opens checkout information', async ({ signedInPage: page }) => {
+    await addToCart(page, PRODUCTS.backpack);
+    await openCart(page);
+    await startCheckout(page);
+    await expect(byTest(page, 'title')).toHaveText('Checkout: Your Information');
+  });
+
+  test(
+    'TC-01d Cart page shows a total consistent with item price and quantity',
+    { tag: '@known-bug' },
+    async ({ signedInPage: page }) => {
+      await addToCart(page, PRODUCTS.backpack);
+      await openCart(page);
+      knownBug('BUG-01', 'Cart total missing (AC1)');
+      await expect(byTest(page, 'total-label')).toBeVisible();
+    }
+  );
 });

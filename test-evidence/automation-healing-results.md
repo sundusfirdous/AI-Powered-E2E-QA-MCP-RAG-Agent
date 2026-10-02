@@ -1,5 +1,10 @@
 # Step 5 Automation Execution and Healing Results
 
+> **Update:** after this report was written the suite was restructured (shared fixtures, small
+> independent tests, defect-only `test.fail()`). Test IDs and files are unchanged, but individual
+> TC files now contain several tests (for example TC-01a to TC-01d). See
+> [reports/QA_EXECUTION_REPORT.md](../reports/QA_EXECUTION_REPORT.md) for the current state.
+
 **Date:** 2026-09-30  
 **Browser:** Chromium only  
 **Command:** `npx playwright test tests/saucedemo-checkout --project=chromium --reporter=line`

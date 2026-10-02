@@ -6,7 +6,10 @@
   "scripts": {
     "test": "playwright test",
     "test:headed": "playwright test --headed",
-    "test:report": "playwright show-report"
+    "test:regression": "playwright test --grep-invert @known-bug",
+    "test:known-bugs": "playwright test --grep @known-bug",
+    "test:report": "playwright show-report",
+    "test:summary": "node scripts/qa-summary.js test-results/results.json reports/latest-run-summary.md"
   },
   "keywords": [
     "playwright",
